@@ -1,3 +1,4 @@
+import.meta.env.VITE_API_URL
 require("dotenv").config(); // MUST be first
 
 const express = require("express");
