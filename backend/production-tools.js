@@ -1,4 +1,3 @@
-require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const pool = require("./db");
@@ -17,7 +16,7 @@ const runProductionUpdate = async () => {
 
         // 2. Ensure Admin User Exists & Reset Credentials
         console.log("-----------------------------------");
-        console.log("👤 key Users & Credentials...");
+        console.log("👤 Syncing Users & Credentials...");
 
         const adminEmail = 'admin@ruralshores.com';
         const adminPass = 'admin123';
@@ -57,13 +56,11 @@ const runProductionUpdate = async () => {
         }
 
         console.log("-----------------------------------");
-        console.log("🎉 UPDATE COMPLETE! The server is ready.");
-        process.exit();
+        console.log("🎉 DB SYNC COMPLETE!");
 
     } catch (err) {
-        console.error("❌ ERROR FAILED:", err);
-        process.exit(1);
+        console.error("❌ DB SYNC FAILED:", err);
     }
 };
 
-runProductionUpdate();
+module.exports = runProductionUpdate;
