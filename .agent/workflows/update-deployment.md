@@ -24,31 +24,14 @@ git push
 
 ---
 
-## 2. Update Production Database (Render)
+## 2. Automatic Database Update (Render Free Tier)
 
-Your new features require new tables in the database. You must run this script on Render.
+Since Render Free Tier does not allow shell access, I have **automated** the database update process.
 
-1.  Go to your [Render Dashboard](https://dashboard.render.com).
-2.  Click on your **Backend Web Service** (e.g., `ruralshores-backend`).
-3.  Click on the **"Shell"** tab on the left menu.
-4.  Wait for the terminal to connect.
-5.  Type the following command and press Enter:
+- **No manual action required**: Every time you push to GitHub, the backend will automatically restart.
+- **Auto-Sync**: On startup, the server will now automatically create the new tables (Tickets, Notifications) and reset the admin credentials to `admin123`.
 
-```bash
-node production-tools.js
-```
-
-### What to expect:
-You should see output confirming the updates:
-```
-🚀 Starting Production Update...
-📦 Applying Schema Updates...
-✅ Schema updates applied successfully.
-👤 key Users & Credentials...
-✅ Admin updated: admin@ruralshores.com
-✅ Default User updated: user@ruralshores.com
-🎉 UPDATE COMPLETE!
-```
+**Wait about 3-5 minutes** for Render to finish the deployment.
 
 ---
 
