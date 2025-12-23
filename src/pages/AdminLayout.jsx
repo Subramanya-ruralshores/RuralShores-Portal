@@ -2,6 +2,8 @@ import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, Users, MessageSquare, LogOut, Shield } from 'lucide-react';
+import Notifications from '../components/Notifications';
+
 
 const AdminLayout = () => {
     const { logout } = useAuth();
@@ -100,17 +102,17 @@ const AdminLayout = () => {
                         <Users size={18} /> Users
                     </Link>
 
-                    <Link to="/admin/help-requests" style={{
+                    <Link to="/admin/support-tickets" style={{
                         display: 'flex', alignItems: 'center', gap: '12px',
                         padding: '12px',
                         borderRadius: '10px',
                         textDecoration: 'none',
-                        color: isActive('/admin/help-requests') ? 'white' : 'var(--text-main)',
-                        background: isActive('/admin/help-requests') ? 'var(--primary)' : 'transparent',
+                        color: isActive('/admin/support-tickets') ? 'white' : 'var(--text-main)',
+                        background: isActive('/admin/support-tickets') ? 'var(--primary)' : 'transparent',
                         fontWeight: '500',
                         fontSize: '0.95rem'
                     }}>
-                        <MessageSquare size={18} /> Help Requests
+                        <MessageSquare size={18} /> Support Tickets
                     </Link>
 
                     <Link to="/admin/services" style={{
@@ -152,8 +154,20 @@ const AdminLayout = () => {
             </aside>
 
             {/* Main Content Area */}
-            <main style={{ marginLeft: '280px', padding: '40px', flex: 1, overflowY: 'auto' }}>
-                <Outlet />
+            <main style={{ marginLeft: '280px', flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+                <header style={{
+                    padding: '20px 40px',
+                    background: 'white',
+                    borderBottom: '1px solid var(--border)',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center'
+                }}>
+                    <Notifications />
+                </header>
+                <div style={{ padding: '40px', flex: 1, overflowY: 'auto' }}>
+                    <Outlet />
+                </div>
             </main>
         </div>
     );

@@ -1,9 +1,48 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, MessageSquare, Globe, ArrowRight, User, AtSign, Tag } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageSquare, Globe, ArrowRight, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 
 const Contact = () => {
     const [focused, setFocused] = useState(null);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        category: 'Business Transformation Services',
+        message: ''
+    });
+    const [status, setStatus] = useState({ loading: false, success: false, error: null });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus({ loading: true, success: false, error: null });
+
+        try {
+            await axios.post(API_ENDPOINTS.SUPPORT.SUBMIT, {
+                ...formData,
+                subject: `${formData.category} Inquiry from ${formData.name}`
+            });
+            setStatus({ loading: false, success: true, error: null });
+            setFormData({
+                name: '',
+                email: '',
+                category: 'Business Transformation Services',
+                message: ''
+            });
+            setTimeout(() => setStatus(prev => ({ ...prev, success: false })), 5000);
+        } catch (err) {
+            setStatus({
+                loading: false,
+                success: false,
+                error: err.response?.data?.message || 'Failed to submit inquiry. Please try again.'
+            });
+        }
+    };
 
     const inputStyle = (isFocused) => ({
         width: '100%',
@@ -112,12 +151,48 @@ const Contact = () => {
                                 <p style={{ color: 'var(--text-light)' }}>Please fill the details below and a subject specialist will reach out within 24 hours.</p>
                             </div>
 
+                            {status.success && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    style={{
+                                        padding: '20px',
+                                        borderRadius: '12px',
+                                        background: '#d4edda',
+                                        color: '#155724',
+                                        marginBottom: '30px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px'
+                                    }}
+                                >
+                                    <CheckCircle size={20} />
+                                    <span>Thank you! Your inquiry has been submitted successfully. We will contact you shortly.</span>
+                                </motion.div>
+                            )}
+
+                            {status.error && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    style={{
+                                        padding: '20px',
+                                        borderRadius: '12px',
+                                        background: '#f8d7da',
+                                        color: '#721c24',
+                                        marginBottom: '30px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px'
+                                    }}
+                                >
+                                    <AlertCircle size={20} />
+                                    <span>{status.error}</span>
+                                </motion.div>
+                            )}
+
                             <form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    alert('Signup application submitted! Our team will verify your details and activate your account within 24 hours.');
-                                    e.target.reset();
-                                }}
+                                onSubmit={handleSubmit}
                                 style={{ display: 'grid', gap: '30px' }}
                             >
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
@@ -125,6 +200,10 @@ const Contact = () => {
                                         <label style={{ fontSize: '0.75rem', fontWeight: '900', textTransform: 'uppercase', color: 'var(--primary)', marginBottom: '10px', display: 'block', letterSpacing: '1px' }}>Full Name</label>
                                         <input
                                             type="text"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required
                                             placeholder="Enter your name"
                                             style={inputStyle(focused === 'name')}
                                             onFocus={() => setFocused('name')}
@@ -135,6 +214,10 @@ const Contact = () => {
                                         <label style={{ fontSize: '0.75rem', fontWeight: '900', textTransform: 'uppercase', color: 'var(--primary)', marginBottom: '10px', display: 'block', letterSpacing: '1px' }}>Work Email</label>
                                         <input
                                             type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
                                             placeholder="you@company.com"
                                             style={inputStyle(focused === 'email')}
                                             onFocus={() => setFocused('email')}
@@ -146,6 +229,9 @@ const Contact = () => {
                                 <div style={{ position: 'relative' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: '900', textTransform: 'uppercase', color: 'var(--primary)', marginBottom: '10px', display: 'block', letterSpacing: '1px' }}>Inquiry Category</label>
                                     <select
+                                        name="category"
+                                        value={formData.category}
+                                        onChange={handleChange}
                                         style={inputStyle(focused === 'cat')}
                                         onFocus={() => setFocused('cat')}
                                         onBlur={() => setFocused(null)}
@@ -154,12 +240,17 @@ const Contact = () => {
                                         <option>Skill Training & Academy</option>
                                         <option>Strategic Partnerships</option>
                                         <option>Career Opportunities</option>
+                                        <option>Other Inquiries</option>
                                     </select>
                                 </div>
 
                                 <div style={{ position: 'relative' }}>
                                     <label style={{ fontSize: '0.75rem', fontWeight: '900', textTransform: 'uppercase', color: 'var(--primary)', marginBottom: '10px', display: 'block', letterSpacing: '1px' }}>How can we help?</label>
                                     <textarea
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        required
                                         rows="6"
                                         placeholder="Briefly describe your requirements..."
                                         style={{ ...inputStyle(focused === 'msg'), resize: 'none' }}
@@ -169,16 +260,22 @@ const Contact = () => {
                                 </div>
 
                                 <button
+                                    type="submit"
+                                    disabled={status.loading}
                                     className="btn btn-primary"
                                     style={{
                                         padding: '22px',
                                         justifyContent: 'center',
                                         fontSize: '1rem',
                                         letterSpacing: '2px',
-                                        boxShadow: '0 20px 40px rgba(10, 43, 85, 0.2)'
+                                        boxShadow: '0 20px 40px rgba(10, 43, 85, 0.2)',
+                                        opacity: status.loading ? 0.7 : 1,
+                                        cursor: status.loading ? 'wait' : 'pointer'
                                     }}
                                 >
-                                    TRANSMIT MESSAGE <Send size={20} style={{ marginLeft: '10px' }} />
+                                    {status.loading ? <Loader2 className="spin" size={20} /> : (
+                                        <>TRANSMIT MESSAGE <Send size={20} style={{ marginLeft: '10px' }} /></>
+                                    )}
                                 </button>
                             </form>
                         </motion.div>

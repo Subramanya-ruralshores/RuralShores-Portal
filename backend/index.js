@@ -1,4 +1,3 @@
-import.meta.env.VITE_API_URL
 require("dotenv").config(); // MUST be first
 
 const express = require("express");
@@ -16,12 +15,18 @@ const authRoutes = require("./routes/auth");
 const serviceRoutes = require("./routes/services");
 const profileRoutes = require("./routes/profile");
 const aiRoutes = require("./routes/aiProjects");
+const supportTicketsRoutes = require("./routes/supportTickets");
+const notificationsRoutes = require("./routes/notifications");
+const settingsRoutes = require("./routes/settings");
 
 // Use Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/ai-projects", aiRoutes);
+app.use("/api/support-tickets", supportTicketsRoutes);
+app.use("/api/notifications", notificationsRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // Health Check
 app.get("/", (req, res) => {

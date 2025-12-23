@@ -26,6 +26,7 @@ import ManageServices from './pages/admin/ManageServices';
 import ManageCareers from './pages/admin/ManageCareers';
 import ManageEmployees from './pages/admin/ManageEmployees';
 import ManageLeaves from './pages/admin/ManageLeaves';
+import ManageTickets from './pages/admin/ManageTickets';
 
 // Employee Pages
 import EmployeeDashboard from './pages/employee/Dashboard';
@@ -75,6 +76,7 @@ function App() {
               <Route path="users" element={<AdminDashboard />} />
               <Route path="help-requests" element={<AdminDashboard />} />
               <Route path="services" element={<ManageServices />} />
+              <Route path="support-tickets" element={<ManageTickets />} />
             </Route>
 
             {/* Employee Routes */}
