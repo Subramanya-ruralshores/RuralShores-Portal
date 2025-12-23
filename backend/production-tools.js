@@ -6,6 +6,21 @@ const runProductionUpdate = async () => {
     console.log("🚀 Starting Production Update...");
 
     try {
+        // 0. Ensure Base Users Table Exists
+        console.log("-----------------------------------");
+        console.log("🛠️ Checking Base Tables...");
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role VARCHAR(50) DEFAULT 'EMPLOYEE',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log("✅ Users table ready.");
+
         // 1. Apply Schema Updates (Tables)
         console.log("-----------------------------------");
         console.log("📦 Applying Schema Updates...");

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -242,7 +243,7 @@ const Services = () => {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/services');
+                const res = await axios.get(API_ENDPOINTS.SERVICES.BASE);
                 if (res.data.length > 0) {
                     // Filter: Show only active services
                     const activeOnly = res.data.filter(s => s.is_active !== false);

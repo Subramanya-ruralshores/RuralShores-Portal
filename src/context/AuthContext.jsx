@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 try {
                     axios.defaults.headers.common['x-auth-token'] = token;
-                    const res = await axios.get('http://localhost:5000/api/auth/user');
+                    const res = await axios.get(API_ENDPOINTS.AUTH.USER);
                     setUser(res.data);
                 } catch (err) {
                     localStorage.removeItem('token');
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const res = await axios.post(API_ENDPOINTS.AUTH.LOGIN, { email, password });
             const { token, user: userData } = res.data;
 
             localStorage.setItem('token', token);
@@ -46,7 +47,7 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (userData) => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/signup', userData);
+            const res = await axios.post(API_ENDPOINTS.AUTH.SIGNUP, userData);
             return res.data;
         } catch (err) {
             console.error(err);

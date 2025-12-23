@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../../config/api';
 import { Plus, Edit, Trash, Eye } from 'lucide-react';
 
 const ManageCareers = () => {
     const [careers, setCareers] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/cms/careers')
+        axios.get(API_ENDPOINTS.CMS.CAREERS)
             .then(res => setCareers(res.data))
             .catch(err => console.error(err));
     }, []);

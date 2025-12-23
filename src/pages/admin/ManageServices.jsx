@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../../config/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit, Trash, X, Save, AlertCircle, CheckCircle2, Image as ImageIcon, Link as LinkIcon, Type } from 'lucide-react';
 
@@ -30,7 +31,7 @@ const ManageServices = () => {
 
     const fetchServices = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/services');
+            const res = await axios.get(API_ENDPOINTS.SERVICES.BASE);
             setServices(res.data);
             setLoading(false);
         } catch (err) {
@@ -89,10 +90,10 @@ const ManageServices = () => {
         try {
             if (currentService) {
                 // Update (Note: Add PUT route to backend if needed, or use POST with ID)
-                await axios.post('http://localhost:5000/api/services', formattedData); // Re-using POST for simplicity if it handles upsert, or update logic
+                await axios.post(API_ENDPOINTS.SERVICES.BASE, formattedData); // Re-using POST for simplicity if it handles upsert, or update logic
                 showNotification('Service updated successfully');
             } else {
-                await axios.post('http://localhost:5000/api/services', formattedData);
+                await axios.post(API_ENDPOINTS.SERVICES.BASE, formattedData);
                 showNotification('New service added');
             }
             fetchServices();
@@ -111,7 +112,7 @@ const ManageServices = () => {
     const confirmDelete = async () => {
         if (!deletingService) return;
         try {
-            await axios.delete(`http://localhost:5000/api/services/${deletingService.id}`);
+            await axios.delete(`${API_ENDPOINTS.SERVICES.BASE}/${deletingService.id}`);
             showNotification('Service removed from ecosystem');
             fetchServices();
             setDeletingService(null);
@@ -123,7 +124,7 @@ const ManageServices = () => {
     const toggleStatus = async (service) => {
         try {
             const updated = { ...service, is_active: !service.is_active };
-            await axios.post('http://localhost:5000/api/services', updated);
+            await axios.post(API_ENDPOINTS.SERVICES.BASE, updated);
             showNotification(`Service ${updated.is_active ? 'Activated' : 'Deactivated'}`);
             fetchServices();
         } catch (err) {

@@ -38,10 +38,28 @@ app.get("/", (req, res) => {
 app.get("/api/db-test", async (req, res) => {
     try {
         const result = await pool.query("SELECT NOW()");
-        res.json({ success: true, time: result.rows[0].now });
+        res.json({ success: true, time: result.rows[0].now, config: process.env.DATABASE_URL ? 'URL' : 'Params' });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, error: "Database connection failed" });
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Debug Tables (Helper for production issues)
+app.get("/api/debug/tables", async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public'
+        `);
+        const userCount = await pool.query("SELECT COUNT(*) FROM users").catch(() => ({ rows: [{ count: 'fail' }] }));
+        res.json({
+            tables: result.rows.map(r => r.table_name),
+            userCount: userCount.rows[0].count
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
